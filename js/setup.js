@@ -9,8 +9,13 @@ var WIZARD_SURNAMES = ['да Марья', 'Верон', 'Мирабелла', '�
 var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
 var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var WIZARD_QUANTITY = 4;
-
-userDialog.classList.remove('hidden');
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = userDialog.querySelector('.setup-close');
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+var inputUserName = userDialog.querySelector('.setup-user-name');
+var isInputUserNameInFocus = false;
+var setupForm = userDialog.querySelector('.setup-wizard-form');
 
 var getRandomWizards = function (names, surnames, coats, eyes) {
   var wizards = [];
@@ -50,3 +55,61 @@ addElement(WIZARD_NAMES, WIZARD_SURNAMES, COAT_COLORS, EYES_COLORS);
 similarListElement.appendChild(fragment);
 
 document.querySelector('.setup-similar').classList.remove('hidden');
+
+var inputUserNameFocusHandler = function () {
+  isInputUserNameInFocus = true;
+};
+
+var inputUserNameBlurHandler = function () {
+  isInputUserNameInFocus = false;
+};
+
+var setupFormSubmitHandler = function (evt) {
+  if (isInputUserNameInFocus) {
+    evt.preventDefault();
+  }
+};
+
+var popupEscHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE && !isInputUserNameInFocus) {
+    closePopup();
+  }
+};
+
+var openPopup = function () {
+  userDialog.classList.remove('hidden');
+  document.addEventListener('keydown', popupEscHandler);
+  inputUserName.addEventListener('focus', inputUserNameFocusHandler);
+  inputUserName.addEventListener('blur', inputUserNameBlurHandler);
+  setupForm.addEventListener('submit', setupFormSubmitHandler);
+};
+
+var closePopup = function () {
+  userDialog.classList.add('hidden');
+  document.removeEventListener('keydown', popupEscHandler)
+  inputUserName.removeEventListener('focus', inputUserNameFocusHandler);
+  inputUserName.removeEventListener('blur', inputUserNameBlurHandler);
+  setupForm.removeEventListener('submit', setupFormSubmitHandler);
+};
+
+
+setupOpen.addEventListener('click', function () {
+  openPopup();
+});
+
+setupOpen.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openPopup();
+  }
+});
+
+setupClose.addEventListener('click', function () {
+  closePopup();
+});
+
+setupClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+});
+
