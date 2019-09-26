@@ -81,20 +81,40 @@ var popupEscHandler = function (evt) {
   }
 };
 
+var wizardCoatClickHandler = function () {
+  wizardCoat.style.fill = COAT_COLORS[Math.floor(Math.random() * COAT_COLORS.length)];
+};
+
+var wizardEyesClickHandler = function () {
+  wizardEyes.style.fill = EYES_COLORS[Math.floor(Math.random() * EYES_COLORS.length)];
+};
+
+var setupFireballClickHandler = function () {
+  var fireballColor = FIREBALL_COLOR[Math.floor(Math.random() * FIREBALL_COLOR.length)];
+  setupFireball.style.backgroundColor = fireballColor;
+  inputFireball.value = fireballColor;
+};
+
 var openPopup = function () {
   userDialog.classList.remove('hidden');
   document.addEventListener('keydown', popupEscHandler);
   inputUserName.addEventListener('focus', inputUserNameFocusHandler);
   inputUserName.addEventListener('blur', inputUserNameBlurHandler);
   setupForm.addEventListener('submit', setupFormSubmitHandler);
+  wizardCoat.addEventListener('click', wizardCoatClickHandler);
+  wizardEyes.addEventListener('click', wizardEyesClickHandler);
+  setupFireball.addEventListener('click', setupFireballClickHandler);
 };
 
 var closePopup = function () {
   userDialog.classList.add('hidden');
-  document.removeEventListener('keydown', popupEscHandler)
+  document.removeEventListener('keydown', popupEscHandler);
   inputUserName.removeEventListener('focus', inputUserNameFocusHandler);
   inputUserName.removeEventListener('blur', inputUserNameBlurHandler);
   setupForm.removeEventListener('submit', setupFormSubmitHandler);
+  wizardCoat.removeEventListener('click', wizardCoatClickHandler);
+  wizardEyes.removeEventListener('click', wizardEyesClickHandler);
+  setupFireball.removeEventListener('click', setupFireballClickHandler);
 };
 
 setupOpen.addEventListener('click', function () {
@@ -116,23 +136,3 @@ setupClose.addEventListener('keydown', function (evt) {
     closePopup();
   }
 });
-
-var wizardCoatClickHandler = function () {
-  wizardCoat.style.fill = COAT_COLORS[Math.floor(Math.random() * COAT_COLORS.length)];
-};
-
-wizardCoat.addEventListener('click', wizardCoatClickHandler);
-
-var wizardEyesClickHandler = function () {
-  wizardEyes.style.fill = EYES_COLORS[Math.floor(Math.random() * EYES_COLORS.length)];
-};
-
-wizardEyes.addEventListener('click', wizardEyesClickHandler);
-
-var setupFireballClickHandler = function () {
-  var fireballColor = FIREBALL_COLOR[Math.floor(Math.random() * FIREBALL_COLOR.length)];
-  setupFireball.style.backgroundColor = fireballColor;
-  inputFireball.value = fireballColor;
-};
-
-setupFireball.addEventListener('click', setupFireballClickHandler);
