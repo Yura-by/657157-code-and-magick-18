@@ -1,54 +1,57 @@
 'use strict';
 
-var upLoad = window.setup.userDialog.querySelector('.upload');
-var inputAvatar = upLoad.querySelector('input');
+(function () {
 
-upLoad.addEventListener('mousedown', function (evt) {
-  evt.preventDefault();
+  var upLoad = window.setup.userDialog.querySelector('.upload');
+  var inputAvatar = upLoad.querySelector('input');
 
-  var startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
-  };
+  upLoad.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
 
-  var dragged = false;
-
-  var mouseMoveHandler = function (moveEvt) {
-    moveEvt.preventDefault();
-    dragged = true;
-
-    var shift = {
-      x: startCoords.x - moveEvt.clientX,
-      y: startCoords.y - moveEvt.clientY
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
     };
 
-    startCoords = {
-      x: moveEvt.clientX,
-      y: moveEvt.clientY
-    };
+    var dragged = false;
 
-    window.setup.userDialog.style.left = (window.setup.userDialog.offsetLeft) - shift.x + 'px';
-    window.setup.userDialog.style.top = (window.setup.userDialog.offsetTop) - shift.y + 'px';
+    var mouseMoveHandler = function (moveEvt) {
+      moveEvt.preventDefault();
+      dragged = true;
 
-  };
-
-  var mouseUpHandler = function (upEvt) {
-    upEvt.preventDefault();
-
-    document.removeEventListener('mousemove', mouseMoveHandler);
-    document.removeEventListener('mouseup', mouseUpHandler);
-
-    if (dragged) {
-      var inputAvatarClickHandler = function (clickEvt) {
-        clickEvt.preventDefault();
-
-        inputAvatar.removeEventListener('click', inputAvatarClickHandler);
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
       };
 
-      inputAvatar.addEventListener('click', inputAvatarClickHandler);
-    }
-  };
-  document.addEventListener('mousemove', mouseMoveHandler);
-  document.addEventListener('mouseup', mouseUpHandler);
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
 
-});
+      window.setup.userDialog.style.left = (window.setup.userDialog.offsetLeft) - shift.x + 'px';
+      window.setup.userDialog.style.top = (window.setup.userDialog.offsetTop) - shift.y + 'px';
+
+    };
+
+    var mouseUpHandler = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+
+      if (dragged) {
+        var inputAvatarClickHandler = function (clickEvt) {
+          clickEvt.preventDefault();
+
+          inputAvatar.removeEventListener('click', inputAvatarClickHandler);
+        };
+
+        inputAvatar.addEventListener('click', inputAvatarClickHandler);
+      }
+    };
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
+  });
+
+})();
