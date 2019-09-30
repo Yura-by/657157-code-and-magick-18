@@ -11,8 +11,10 @@ var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var WIZARD_QUANTITY = 4;
 var setupOpen = document.querySelector('.setup-open');
 var setupClose = userDialog.querySelector('.setup-close');
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
+var keyCodeName = {
+  ESC_KEYCODE: 27,
+  ENTER_KEYCODE: 13
+};
 var inputUserName = userDialog.querySelector('.setup-user-name');
 var isInputUserNameInFocus = false;
 var setupForm = userDialog.querySelector('.setup-wizard-form');
@@ -76,7 +78,7 @@ var setupFormSubmitHandler = function (evt) {
 };
 
 var popupEscHandler = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE && !isInputUserNameInFocus) {
+  if (evt.keyCode === keyCodeName.ESC_KEYCODE && !isInputUserNameInFocus) {
     closePopup();
   }
 };
@@ -122,7 +124,7 @@ setupOpen.addEventListener('click', function () {
 });
 
 setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
+  if (evt.keyCode === keyCodeName.ENTER_KEYCODE) {
     openPopup();
   }
 });
@@ -132,7 +134,7 @@ setupClose.addEventListener('click', function () {
 });
 
 setupClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
+  if (evt.keyCode === keyCodeName.ENTER_KEYCODE) {
     closePopup();
   }
 });
