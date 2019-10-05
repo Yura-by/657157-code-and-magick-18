@@ -9,8 +9,6 @@
   var similarWizardTemplte = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
   var similarListElement = document.querySelector('.setup-similar-list');
   var fragment = document.createDocumentFragment();
-  var WIZARD_NAMES = ['Иван', 'Хуан', 'Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-  var WIZARD_SURNAMES = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
   var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
   var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
   var WIZARD_QUANTITY = 4;
@@ -32,123 +30,58 @@
   var setupFireball = userDialog.querySelector('.setup-fireball-wrap');
   var FIREBALL_COLOR = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
   var inputFireball = setupFireball.querySelector('.setup-fireball-wrap input');
+  var formSetup = userDialog.querySelector('.setup-wizard-form');
+  var inputCoatColor = formSetup.querySelector('input[name="coat-color"]');
+  var inputEyesColor = formSetup.querySelector('input[name="eyes-color"]');
 
-  var getRandomWizards = function (names, surnames, coats, eyes) {
-    var wizards = [];
 
-    for (var i = 0; i < WIZARD_QUANTITY; i++) {
-      var wizard = {};
-
-      wizard.name = names[Math.floor(Math.random() * names.length)] + ' ' + surnames[Math.floor(Math.random() * surnames.length)];
-      wizard.coatColor = coats[Math.floor(Math.random() * coats.length)];
-      wizard.eyesColor = eyes[Math.floor(Math.random() * eyes.length)];
-
-      wizards.push(wizard);
-    }
-
-    return wizards;
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 1000; margin: 0 auto; text-align: center; background-color: black;';
+    node.style.position = 'fixed';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+    node.textContent = errorMessage;
+    node.classList.add('error-message');
+    document.body.insertAdjacentElement('afterbegin', node);
   };
 
 
-  var load = function (onLoad, onError) {
-    var URL = 'https://js.dump.academy/code-and-magick/data';
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    var xhrLoadHandler = function () {
-      if (xhr.status === 200) {
-        onLoad(xhr.response);
-      } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.status.Text);
-      }
-    };
-
-    xhr.addEventListener('load', xhrLoadHandler);
-
-    xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
-    });
-
-    xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout / 10 + 'секунд');
-    });
-
-    xhr.timeout = 10000;
-    xhr.open('GET', URL);
-    xhr.send();
-  };
-
-  var save = function (data, onLoad, onError) {
-    var URL = 'https://js.dump.academy/code-and-magick';
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    var xhrLoadHandler = function () {
-      if (xhr.status === 200) {
-        onLoad(xhr.response);
-      } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    };
-
-    xhr.addEventListener('load', xhrLoadHandler());
-
-    xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
-    });
-
-    xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout / 10 + 'секунд');
-    });
-
-    xhr.timeout = 10000;
-    xhr.open('POST', URL);
-    xhr.send(data);
-  };
-
-  window.backend = {
-    load: load,
-    save: save
-  };
-
-  window.backend.load(function (data) {
-    console.log(data);
+  formSetup.addEventListener('submit', function (evt) {
+    var form = new FormData(formSetup);
+    window.backend.save(form, closePopup, errorHandler);
+    evt.preventDefault();
   });
-
-
-
-
-
-
-
-
-
 
   var renderWizard = function (element) {
     var wizardElement = similarWizardTemplte.cloneNode(true);
 
     wizardElement.querySelector('.setup-similar-label').textContent = element.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = element.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = element.eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = element.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = element.colorEyes;
 
     return wizardElement;
   };
 
-  var addElement = function (names, surnames, coats, eyes) {
-    var wizardsArray = getRandomWizards(names, surnames, coats, eyes);
-    for (var j = 0; j < wizardsArray.length; j++) {
-      fragment.appendChild(renderWizard(wizardsArray[j]));
+  var addElement = function (wizards) {
+    for (var j = 0; j < WIZARD_QUANTITY; j++) {
+      fragment.appendChild(renderWizard(wizards[j]));
     }
   };
 
-  addElement(WIZARD_NAMES, WIZARD_SURNAMES, COAT_COLORS, EYES_COLORS);
-
-  similarListElement.appendChild(fragment);
-
-  document.querySelector('.setup-similar').classList.remove('hidden');
-
   var inputUserNameFocusHandler = function () {
     isInputUserNameInFocus = true;
+  };
+
+  var renderWizards = function () {
+    if (similarListElement.children.length === 0) {
+      window.backend.load(function (data) {
+        addElement(data);
+        similarListElement.appendChild(fragment);
+        document.querySelector('.setup-similar').classList.remove('hidden');
+      }, errorHandler);
+    }
   };
 
   var inputUserNameBlurHandler = function () {
@@ -169,10 +102,12 @@
 
   var wizardCoatClickHandler = function () {
     wizardCoat.style.fill = COAT_COLORS[Math.floor(Math.random() * COAT_COLORS.length)];
+    inputCoatColor.value = wizardCoat.style.fill;
   };
 
   var wizardEyesClickHandler = function () {
     wizardEyes.style.fill = EYES_COLORS[Math.floor(Math.random() * EYES_COLORS.length)];
+    inputEyesColor.value = wizardEyes.style.fill;
   };
 
   var setupFireballClickHandler = function () {
@@ -196,6 +131,16 @@
     wizardEyes.addEventListener('click', wizardEyesClickHandler);
     setupFireball.addEventListener('click', setupFireballClickHandler);
     getStartPosition();
+    renderWizards();
+  };
+
+  var removeErrorMessages = function () {
+    var errorMessages = document.body.querySelectorAll('.error-message');
+    if (errorMessages.length > 0) {
+      for (var i = 0; i < errorMessages.length; i++) {
+        errorMessages[i].remove();
+      }
+    }
   };
 
   var closePopup = function () {
@@ -207,7 +152,7 @@
     wizardCoat.removeEventListener('click', wizardCoatClickHandler);
     wizardEyes.removeEventListener('click', wizardEyesClickHandler);
     setupFireball.removeEventListener('click', setupFireballClickHandler);
-
+    removeErrorMessages();
   };
 
   setupOpen.addEventListener('click', function () {
