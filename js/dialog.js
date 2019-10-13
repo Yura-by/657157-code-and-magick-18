@@ -54,4 +54,9 @@
     document.addEventListener('mouseup', mouseUpHandler);
   });
 
+  window.dialog = {
+    inputAvatar: inputAvatar,
+    upLoad: upLoad
+  };
+
 })();
