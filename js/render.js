@@ -10,19 +10,20 @@
 
   var renderWizard = function (element) {
     var wizardElement = similarWizardTemplte.cloneNode(true);
-
     wizardElement.querySelector('.setup-similar-label').textContent = element.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = element.colorCoat;
-    wizardElement.querySelector('.wizard-eyes').style.fill = element.colorEyes;
+    wizardElement.querySelector('.wizard-coat').style.fill = element.coatColor;
+    wizardElement.querySelector('.wizard-eyes').style.fill = element.eyesColor;
 
     return wizardElement;
   };
 
   var addElement = function (arr) {
     var takeNumber = arr.length > WIZARD_QUANTITY ? WIZARD_QUANTITY : arr.length;
-    for (var j = 0; j < takeNumber; j++) {
-      fragment.appendChild(renderWizard(arr[j]));
-    }
+    arr.slice(0, takeNumber).map(function (it) {
+      return new window.Wizard(it);
+    }).forEach(function (wizard) {
+      fragment.appendChild(renderWizard(wizard));
+    });
   };
 
   var renderWizards = function (data) {
@@ -49,10 +50,10 @@
   var getRank = function (wizard) {
     var rank = 0;
 
-    if (wizard.colorCoat === window.setup.colors.coatColor) {
+    if (wizard.colorCoat === window.setup.wizard.coatColor) {
       rank += 2;
     }
-    if (wizard.colorEyes === window.setup.colors.eyesColor) {
+    if (wizard.colorEyes === window.setup.wizard.eyesColor) {
       rank += 1;
     }
 
