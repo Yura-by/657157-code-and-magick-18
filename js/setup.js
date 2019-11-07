@@ -53,6 +53,17 @@
     var form = new FormData(formSetup);
     window.backend.save(form, closePopup, errorHandler);
     evt.preventDefault();
+
+    var wizardCopy = document.querySelector('svg');
+    wizardCopy.querySelector('#wizard-coat').style.fill = wizard.coatColor;
+    wizardCopy.querySelector('#wizard-eyes').style.fill = wizard.eyesColor;
+    var wizardBase64Right = window.svg2base64(wizardCopy);
+
+    wizardCopy.querySelector('#wizard').setAttribute('transform', 'translate(62, 0) scale(-1, 1)');
+    var wizardBase64Left = window.svg2base64(wizardCopy);
+    window.wizardBase64Left = wizardBase64Left;
+    window.restartGame(wizardBase64Right, wizardBase64Left);
+
   });
 
   var inputUserNameFocusHandler = function () {

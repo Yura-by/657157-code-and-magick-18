@@ -584,7 +584,7 @@ window.Game = (function () {
         this.state.objects.push({
           direction: me.direction,
           height: window.GameConstants.Fireball.size,
-          speed: window.GameConstants.Fireball.speed(!!(me.direction & Direction.LEFT)),
+          speed: window.GameConstants.Fireball.speed(me.direction & Direction.LEFT),
           sprite: SpriteMap[ObjectType.FIREBALL],
           type: ObjectType.FIREBALL,
           width: window.GameConstants.Fireball.size,
